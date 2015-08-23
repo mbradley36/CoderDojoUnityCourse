@@ -19,7 +19,8 @@ public class Obstacle : MonoBehaviour {
 			SetRandomSpeed ();
 		}
 
-		SetRandomDirectionVector ();
+		directionVector = transform.position;
+		directionVector.Normalize();
 	}
 	
 	// Update is called once per frame
@@ -27,10 +28,18 @@ public class Obstacle : MonoBehaviour {
 		//To move the obstacle, we first get it's current position from the transform.
 		Vector2 nextPosition = transform.position;
 		//Then, we add the direction vector to that position.
-		nextPosition.x += directionVector.x;
-		nextPosition.y += directionVector.y;
+		nextPosition.x += directionVector.x*obstacleSpeed;
+		nextPosition.y += directionVector.y*obstacleSpeed;
 		//Finally, we assign the position to the next position we have created.
 		transform.position = nextPosition;
+
+		//Make sure the bullet is still in the bounds of the game.
+		bool inBounds = GameManager.instance.InGameBounds(transform.position);
+
+		//if it isn't, delete it.
+		/*if(!inBounds) {
+			Destroy(this.gameObject);
+		}*/
 	}
 
 	//This function is called by the Unity engine when this object overlaps another.
@@ -42,7 +51,7 @@ public class Obstacle : MonoBehaviour {
 		//	in to.
 		if (collidedWith.tag == "Bullet") {
 			//Destroy the bullet the obstacle collided with.
-			GameObject.Destroy(collidedWith);
+			Destroy(collidedWith.gameObject);
 			//Lower health if it overlapped a bullet.
 			DecreaseHealth();
 		}
@@ -56,22 +65,12 @@ public class Obstacle : MonoBehaviour {
 		obstacleSpeed = Random.Range (10, 100);
 	}
 
-	//This function determines the direction the obstacle will move across the screen.
-	//	This direction is called a vector.
-	void SetRandomDirectionVector() {
-		//We first need to initialize the vector.
-		directionVector = new Vector2();
-		//Then, we set the x and y to be randomly determined within our screen space.
-		//directionVector.x = Random.Range ();
-		//directionVector.y = Random.Range ();
-	}
-
 	//function that will check if the object dies when health decreases
 	void DecreaseHealth() {
 		health --;
 		if (health == 0) {
 			//if the object is out of health, remove it from the game
-			GameObject.Destroy(this);
+			Destroy(this.gameObject);
 		}
 	}
 

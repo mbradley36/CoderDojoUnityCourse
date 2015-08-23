@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class Bullet : MonoBehaviour {
+	public int bulletSpeed;
 	
 	// Update is called once per frame
 	void Update () {
@@ -11,11 +12,20 @@ public class Bullet : MonoBehaviour {
 		//	character's forward to be to the right of the sprite), then adding it
 		//	to the bullet's current position.
 		Vector2 forward = transform.right;
+		forward.Normalize();
 		Vector2 nextPosition = transform.position;
-		nextPosition.x += forward.x;
-		nextPosition.y += forward.y;
+		nextPosition.x += forward.x*bulletSpeed;
+		nextPosition.y += forward.y*bulletSpeed;
 		//Finally, we assign the position to our next position.
 		transform.position = nextPosition;
+
+		//Make sure the bullet is still in the bounds of the game.
+		bool inBounds = GameManager.instance.InGameBounds(transform.position);
+
+		//if it isn't, delete it.
+		if(!inBounds) {
+			Destroy(this.gameObject);
+		}
 	}
 
 }
