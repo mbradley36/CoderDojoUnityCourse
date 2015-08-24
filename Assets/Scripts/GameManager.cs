@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour {
 	public static GameManager instance {get; private set;}
 
 	private float minX, maxX, minY, maxY;
+	private float padding;
 
 	public GameObject obstaclePrefab;
 	private float timerSet, timerLength;
@@ -16,6 +17,7 @@ public class GameManager : MonoBehaviour {
 	void Awake() {
 		instance = this;
 		ResetTimer();
+		padding = 0.5f;
 	}
 
 	void Start() {
@@ -32,10 +34,10 @@ public class GameManager : MonoBehaviour {
 		//	the height by our screen's aspect ratio(width divided by height).
 		float width = height * Screen.width/Screen.height;
 
-		minX = -width/2;
-		maxX = width/2;
-		minY = -height/2;
-		maxY = height/2;
+		minX = -width - padding;
+		maxX = width + padding;
+		minY = -height - padding;
+		maxY = height + padding;
 	}
 
 	void Update() {
@@ -73,7 +75,7 @@ public class GameManager : MonoBehaviour {
 
 	private void ResetTimer() {
 		timerSet = Time.time;
-		timerLength = Random.Range(0.5f, 10f);
+		timerLength = Random.Range(0.1f, 0.5f);
 	}
 
 	private Vector2 GetRandomPosition() {

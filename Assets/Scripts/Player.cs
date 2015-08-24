@@ -6,7 +6,7 @@ public class Player : MonoBehaviour {
 	//	public variables are visible in the Unity inspector and additional classes
 	//	put [HideInInspector] above a public variable if you don't want it to be visible
 	//	private variables are hidden.
-	public int playerSpeed;
+	public float playerSpeed;
 	public int playerHealth;
 	public GameObject bullet;
 
@@ -43,8 +43,8 @@ public class Player : MonoBehaviour {
 	}
 
 	//This function is called by the Unity engine when this object overlaps another.
-	void OnCollisionEnter2D(Collider2D collidedWith) {
-		if (collidedWith.tag == "") {
+	void OnCollisionEnter2D(Collision2D collidedWith) {
+		if (collidedWith.gameObject.tag == "") {
 			playerHealth --;
 		}
 	}

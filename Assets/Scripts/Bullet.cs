@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class Bullet : MonoBehaviour {
-	public int bulletSpeed;
+	public float bulletSpeed;
 	
 	// Update is called once per frame
 	void Update () {

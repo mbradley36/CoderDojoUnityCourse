@@ -19,7 +19,7 @@ public class Obstacle : MonoBehaviour {
 			SetRandomSpeed ();
 		}
 
-		directionVector = transform.position;
+		directionVector = transform.position*-1;
 		directionVector.Normalize();
 	}
 	
@@ -43,13 +43,14 @@ public class Obstacle : MonoBehaviour {
 	}
 
 	//This function is called by the Unity engine when this object overlaps another.
-	void OnCollisionEnter2D(Collider2D collidedWith) {
+	void OnCollisionEnter2D(Collision2D collidedWith) {
 		//Objects can be tagged in the Unity Inspector so that they can
 		//	easily be checked in code. Here, we have tagged bullets with
 		//	a bullet tag so that any time an obstacle runs in to one, we
 		//	can check and efficiently know that the bullet is what we ran
 		//	in to.
-		if (collidedWith.tag == "Bullet") {
+		Debug.Log("collided with " + collidedWith.gameObject.tag);
+		if (collidedWith.gameObject.tag == "Bullet") {
 			//Destroy the bullet the obstacle collided with.
 			Destroy(collidedWith.gameObject);
 			//Lower health if it overlapped a bullet.
