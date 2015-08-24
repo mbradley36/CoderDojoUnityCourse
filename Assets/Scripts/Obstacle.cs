@@ -37,9 +37,9 @@ public class Obstacle : MonoBehaviour {
 		bool inBounds = GameManager.instance.InGameBounds(transform.position);
 
 		//if it isn't, delete it.
-		/*if(!inBounds) {
+		if(!inBounds) {
 			Destroy(this.gameObject);
-		}*/
+		}
 	}
 
 	//This function is called by the Unity engine when this object overlaps another.

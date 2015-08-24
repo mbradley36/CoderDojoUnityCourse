@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject obstaclePrefab;
 	private float timerSet, timerLength;
 
+	public float obstacleSpawnMinTime, obstacleSpawnMaxTime;
+
 	void Awake() {
 		instance = this;
 		ResetTimer();
@@ -83,7 +85,7 @@ public class GameManager : MonoBehaviour {
 		float min = Random.Range(0f,1f);
 
 		if (xEdge > 0.5f) {
-			float yPos = Random.Range(minY, maxY);
+			float yPos = Random.Range(obstacleSpawnMinTime, obstacleSpawnMaxTime);
 			if(min > 0.5f) {
 				return new Vector2(minX, yPos);
 			} else {

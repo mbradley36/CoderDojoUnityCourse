@@ -9,10 +9,13 @@ public class Player : MonoBehaviour {
 	public float playerSpeed;
 	public int playerHealth;
 	public GameObject bullet;
+	public float bulletFrequency;
+
+	private float lastBulletShot;
 
 	// Use this for initialization
 	void Start () {
-		
+		ResetBulletSpacingTimer();
 	}
 	
 	// Update is called once per frame
@@ -35,9 +38,10 @@ public class Player : MonoBehaviour {
 		}
 
 		//If the player hits space, we will instantiate(create and place) a bullet prefab.
-		if (Input.GetKey (KeyCode.Space)) {
+		if (Input.GetKey (KeyCode.Space) && Time.time - lastBulletShot > bulletFrequency) {
 			//Instaniate the bullet at the player's position and rotation
 			GameObject.Instantiate(bullet, transform.position, transform.rotation);
+			ResetBulletSpacingTimer();
 		}
 
 	}
@@ -47,5 +51,9 @@ public class Player : MonoBehaviour {
 		if (collidedWith.gameObject.tag == "") {
 			playerHealth --;
 		}
+	}
+
+	void ResetBulletSpacingTimer() {
+		lastBulletShot = Time.time;
 	}
 }
