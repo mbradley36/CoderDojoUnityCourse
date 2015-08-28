@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour {
+
 	//class variables:
 	//	public variables are visible in the Unity inspector and additional classes
 	//	put [HideInInspector] above a public variable if you don't want it to be visible
@@ -10,12 +12,17 @@ public class Player : MonoBehaviour {
 	public int playerHealth;
 	public GameObject bullet;
 	public float bulletFrequency;
-
+	public float bulletLaunchOffset;
+	
 	private float lastBulletShot;
+	private Text _livesDisplay;
 
 	// Use this for initialization
 	void Start () {
 		ResetBulletSpacingTimer();
+		var tCanvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
+		_livesDisplay = tCanvas.transform.Find( "Text Lives Value" ).GetComponent<Text>(); 
+		_livesDisplay.text = playerHealth.ToString();
 	}
 	
 	// Update is called once per frame
@@ -39,8 +46,15 @@ public class Player : MonoBehaviour {
 
 		//If the player hits space, we will instantiate(create and place) a bullet prefab.
 		if (Input.GetKey (KeyCode.Space) && Time.time - lastBulletShot > bulletFrequency) {
-			//Instaniate the bullet at the player's position and rotation
-			GameObject.Instantiate(bullet, transform.position, transform.rotation);
+			// Instaniate the bullet at the player's position and rotation
+			// use bulletLaunchOffset to adjust the bullet position to be at the end of the turret 
+			Vector2 tForward = transform.right;
+			tForward.Normalize();
+			Vector2 tBulletPosition = transform.position;
+			tBulletPosition.x += tForward.x * bulletLaunchOffset;
+			tBulletPosition.y += tForward.y * bulletLaunchOffset;
+
+			GameObject.Instantiate(bullet, tBulletPosition, transform.rotation);
 			ResetBulletSpacingTimer();
 		}
 
@@ -48,8 +62,19 @@ public class Player : MonoBehaviour {
 
 	//This function is called by the Unity engine when this object overlaps another.
 	void OnCollisionEnter2D(Collision2D collidedWith) {
-		if (collidedWith.gameObject.tag == "") {
+		if (collidedWith.gameObject.tag == "Obstacle") {
+			// Destroy the obstacle that collided with the player.
+			Destroy(collidedWith.gameObject);
+
+			// Decrease user health and update lives display
 			playerHealth --;
+			_livesDisplay.text = playerHealth.ToString();
+
+			// If user has died, go to Game Over screen
+			if( playerHealth == 0 )
+			{
+				SceneManager.ChangeScene( SceneIds.GameOver );
+			}
 		}
 	}
 
