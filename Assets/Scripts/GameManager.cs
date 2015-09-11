@@ -1,5 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
+
+/*
+ * Notes:
+ * It is a known problem that the UI is presented at a large size in comparison with game content:
+ * http://forum.unity3d.com/threads/ui-canvas-related-questions.265171/
+ * To easily move between UI and Game view while viewing the Scene, double click the Canvas or the Camera
+ */
 
 public class GameManager : MonoBehaviour {
 	//There will only be one game manager in the game. Because of this,
@@ -16,11 +24,22 @@ public class GameManager : MonoBehaviour {
 
 	public float obstacleSpawnMinTime, obstacleSpawnMaxTime;
 
+	private Canvas _canvas;
+	private Button _quitButton;
+	private Text _scoreDisplay;
+
 	void Awake() {
 		instance = this;
 		ResetTimer();
 		padding = 0.5f;
+		Model.instance.SetScore( 0 );
+
+		_canvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
+		_scoreDisplay = _canvas.transform.Find( "Text Score Value" ).GetComponent<Text>(); 
+		_quitButton = _canvas.transform.Find( "Button Quit" ).GetComponent<Button>(); 
+		_quitButton.onClick.AddListener( () => { SceneManager.ChangeScene( SceneIds.GameOver ); } );
 	}
+
 
 	void Start() {
 		//We're going to calculate the world bounds of the 2D screen, so that
@@ -40,6 +59,8 @@ public class GameManager : MonoBehaviour {
 		maxX = width + padding;
 		minY = -height - padding;
 		maxY = height + padding;
+
+		_scoreDisplay.text = Model.instance.GetScore().ToString();
 	}
 
 	void Update() {
@@ -67,6 +88,12 @@ public class GameManager : MonoBehaviour {
 		return maxY;
 	}
 
+	public void UpdateScoreDisplay()
+	{
+		_scoreDisplay.text = Model.instance.GetScore().ToString();
+
+	}
+	
 	//Function objects can call to see if they're in the game bounds
 	public bool InGameBounds(Vector2 currentPosition) {
 		//if the object has left the game bounds, we will return false

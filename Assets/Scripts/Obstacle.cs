@@ -9,6 +9,8 @@ public class Obstacle : MonoBehaviour {
 	public int health;
 	public float obstacleSpeed;
 	public bool randomSpeed;
+	public float randomMinSpeed;
+	public float randomMaxSpeed;
 
 	private Vector2 directionVector;
 
@@ -21,6 +23,8 @@ public class Obstacle : MonoBehaviour {
 
 		directionVector = transform.position*-1;
 		directionVector.Normalize();
+
+		transform.rotation *= Quaternion.FromToRotation( Vector3.right, new Vector3( directionVector.x, directionVector.y, 0 ) );
 	}
 	
 	// Update is called once per frame
@@ -51,6 +55,7 @@ public class Obstacle : MonoBehaviour {
 		//	in to.
 		Debug.Log("collided with " + collidedWith.gameObject.tag);
 		if (collidedWith.gameObject.tag == "Bullet") {
+			StepBackwards();
 			//Destroy the bullet the obstacle collided with.
 			Destroy(collidedWith.gameObject);
 			//Lower health if it overlapped a bullet.
@@ -63,16 +68,28 @@ public class Obstacle : MonoBehaviour {
 		//Random.range is a pre-existing function that will pick a number somewhere between
 		//	the numbers we give it. The function may also pick the lower or upper bound we
 		//	give it. This is called beign inclusive.
-		obstacleSpeed = Random.Range (10, 100);
+		obstacleSpeed = Random.Range( randomMinSpeed, randomMaxSpeed );
 	}
 
 	//function that will check if the object dies when health decreases
 	void DecreaseHealth() {
 		health --;
 		if (health == 0) {
+			// increment score
+			Model.instance.ChangeScore( 1 );
+			GameManager.instance.UpdateScoreDisplay();
+
 			//if the object is out of health, remove it from the game
 			Destroy(this.gameObject);
 		}
+	}
+
+	void StepBackwards()
+	{
+		Vector2 tPosition = transform.position;
+		tPosition.x += directionVector.x * -0.1f;
+		tPosition.y += directionVector.y * -0.1f;
+		transform.position = tPosition;
 	}
 
 }
