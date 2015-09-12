@@ -16,12 +16,18 @@ public class Player : MonoBehaviour {
 	
 	private float lastBulletShot;
 	private Text _livesDisplay;
+	private SceneSwitcher _sceneSwitcher;
+	private Canvas _canvas;
 
 	// Use this for initialization
 	void Start () {
 		ResetBulletSpacingTimer();
-		var tCanvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
-		_livesDisplay = tCanvas.transform.Find( "Text Lives Value" ).GetComponent<Text>(); 
+
+		_sceneSwitcher = GetComponent<SceneSwitcher>();
+
+		_canvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
+
+		_livesDisplay = _canvas.transform.Find( "Text Lives Value" ).GetComponent<Text>(); 
 		_livesDisplay.text = playerHealth.ToString();
 	}
 	
@@ -73,7 +79,7 @@ public class Player : MonoBehaviour {
 			// If user has died, go to Game Over screen
 			if( playerHealth == 0 )
 			{
-				SceneManager.ChangeScene( SceneIds.GameOver );
+				_sceneSwitcher.SwitchToSceneNumber( 2 );
 			}
 		}
 	}

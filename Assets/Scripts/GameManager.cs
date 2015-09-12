@@ -25,19 +25,16 @@ public class GameManager : MonoBehaviour {
 	public float obstacleSpawnMinTime, obstacleSpawnMaxTime;
 
 	private Canvas _canvas;
-	private Button _quitButton;
 	private Text _scoreDisplay;
 
 	void Awake() {
 		instance = this;
+		_canvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
+		_scoreDisplay = _canvas.transform.Find( "Text Score Value" ).GetComponent<Text>(); 
+
 		ResetTimer();
 		padding = 0.5f;
 		Model.instance.SetScore( 0 );
-
-		_canvas = GameObject.Find("GameSceneCanvas").GetComponent<Canvas>();
-		_scoreDisplay = _canvas.transform.Find( "Text Score Value" ).GetComponent<Text>(); 
-		_quitButton = _canvas.transform.Find( "Button Quit" ).GetComponent<Button>(); 
-		_quitButton.onClick.AddListener( () => { SceneManager.ChangeScene( SceneIds.GameOver ); } );
 	}
 
 
